@@ -44,9 +44,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'report1' => 'site/report1',
-                'report2' => 'site/report2',
-                'partners' => 'site/partners',
+                '<action>' => 'site/<action>'
             ],
         ],
     ],

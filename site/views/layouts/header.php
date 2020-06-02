@@ -15,6 +15,27 @@ use yii\helpers\Html;
             <span class="sr-only">Toggle navigation</span>
         </a>
 
+        <div class="navbar-custom-menu">
+
+            <ul class="nav navbar-nav">
+
+                <li>
+                    <?= Html::a(
+                        Yii::$app->user->identity->name,
+                        ['/site/index']
+                    ) ?>
+
+                </li>
+                <li class="">
+                    <?= Html::a(
+                        'Выход',
+                        ['/site/logout'],
+                        ['data-method' => 'post', 'class' => '']
+                    ) ?>
+                </li>
+            </ul>
+        </div>
+
         <?php if (false): ?>
         <div class="navbar-custom-menu">
 

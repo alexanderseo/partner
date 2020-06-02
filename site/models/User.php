@@ -2,103 +2,86 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+/**
+ * Class User
+ *
+ * @package app\models
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $password_hash
+ * @property string $auth_key
+ * @property string $mail
+ * @property string $role
+ * @property int $created_at
+ * @property int $updated_at
+ */
+
+class User extends ActiveRecord implements IdentityInterface
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+    public static function create($name, $password, $mail, $role)
+    {
+        $user = new self();
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
+        $user->name = $name;
+        $user->password_hash = Yii::$app->security->generatePasswordHash($password);
+        $user->auth_key = Yii::$app->security->generateRandomString();
+        $user->mail = $mail;
+        $user->role = $role;
 
+        return $user;
+    }
 
-    /**
-     * {@inheritdoc}
-     */
+    public static function getAuthUser($mail, $password)
+    {
+        $user = self::findOne(['mail' => $mail]);
+
+        if (!$user) return null;
+        if (!Yii::$app->security->validatePassword($password, $user->password_hash)) return null;
+
+        return $user;
+    }
+
+    public static function tableName()
+    {
+        return '{{%users}}';
+    }
+
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
+    // IdentityInterface
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return self::findOne($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
         return null;
     }
 
-    /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
-     */
-    public static function findByUsername($username)
-    {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($key)
     {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        return $this->auth_key === $key;
     }
 }

@@ -2,11 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
+use app\models\forms\Login;
 
 class SiteController extends Controller
 {
@@ -46,12 +47,21 @@ class SiteController extends Controller
     {
         if (Yii::$app->user->isGuest) {
             $this->layout = 'main-login';
-            $model = new LoginForm();
-            if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+            $model = new Login();
+
+            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+                $user = User::getAuthUser($model->mail, $model->password);
+
+                if (!$user) {
+                    Yii::$app->session->setFlash('error', 'Неправильно введены e-mail или пароль');
+                    return $this->goBack();
+                }
+
+                Yii::$app->user->login($user, $model->rememberMe ? 3600 * 24 * 30 : 0);
                 return $this->goBack();
             }
 
-            $model->password = '';
             return $this->render('login', [
                 'model' => $model,
             ]);

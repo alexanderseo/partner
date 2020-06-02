@@ -4,9 +4,9 @@ use yii\bootstrap\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\models\LoginForm */
+/* @var $model \app\models\forms\Login */
 
-$this->title = 'Sign In';
+$this->title = 'Партнеры';
 
 $fieldOptions1 = [
     'options' => ['class' => 'form-group has-feedback'],
@@ -30,9 +30,9 @@ $fieldOptions2 = [
         <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableClientValidation' => false]); ?>
 
         <?= $form
-            ->field($model, 'username', $fieldOptions1)
+            ->field($model, 'mail', $fieldOptions1)
             ->label(false)
-            ->textInput(['placeholder' => 'Логин']) ?>
+            ->textInput(['placeholder' => 'E-mail']) ?>
 
         <?= $form
             ->field($model, 'password', $fieldOptions2)

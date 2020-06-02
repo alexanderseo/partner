@@ -1,3 +1,9 @@
+<?php
+
+use app\rbac\Roles;
+
+?>
+
 <aside class="main-sidebar">
 
     <section class="sidebar">
@@ -51,12 +57,12 @@
                         'url' => ['/site/report2'],
                         'active' => $this->context->route === 'site/report2'
                     ],
-                    [
+                    Roles::isAdmin() ? [
                         'label' => 'Партнеры',
                         'icon' => 'users',
                         'url' => ['/site/partners'],
                         'active' => $this->context->route === 'site/partners'
-                    ],
+                    ] : false,
                     false && ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     false && ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     false && ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],

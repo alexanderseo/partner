@@ -54,8 +54,10 @@ class SiteController extends Controller
                 $user = User::getAuthUser($model->mail, $model->password);
 
                 if (!$user) {
-                    Yii::$app->session->setFlash('error', 'Неправильно введены e-mail или пароль');
-                    return $this->goBack();
+                    return $this->render('login', [
+                        'model' => $model,
+                        'wrong' => true,
+                    ]);
                 }
 
                 Yii::$app->user->login($user, $model->rememberMe ? 3600 * 24 * 30 : 0);
@@ -64,9 +66,12 @@ class SiteController extends Controller
 
             return $this->render('login', [
                 'model' => $model,
+                'wrong' => false
             ]);
         } else {
-            return $this->render('profile');
+            return $this->render('profile', [
+                'user' => Yii::$app->user->identity,
+            ]);
         }
 
     }

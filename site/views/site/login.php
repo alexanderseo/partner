@@ -5,6 +5,7 @@ use yii\bootstrap\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \app\models\forms\Login */
+/* @var $wrong boolean */
 
 $this->title = 'Партнеры';
 
@@ -52,6 +53,9 @@ $fieldOptions2 = [
 
 
         <?php ActiveForm::end(); ?>
+        <?php if ($wrong): ?>
+            <p class="text-danger" style="margin-bottom: 0;">Неправильно введены e-mail или пароль</p>
+        <?php endif ?>
 
         <!--
         <a href="#">I forgot my password</a><br>

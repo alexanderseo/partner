@@ -47,6 +47,10 @@ $config = [
                 '<action>' => 'site/<action>'
             ],
         ],
+        'authManager' => [
+            'class' => 'yii\rbac\PhpManager',
+            'defaultRoles' => ['admin', 'partner'],
+        ],
     ],
     'params' => $params,
 ];

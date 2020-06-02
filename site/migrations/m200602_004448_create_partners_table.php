@@ -20,9 +20,9 @@ class m200602_004448_create_partners_table extends Migration
         $this->createTable('{{%partners}}', [
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
-            'web_user_id' => $this->string()->notNull(),
             'site' => $this->string()->notNull(),
-            'utm' => $this->string()->notNull(),
+            'utm' => $this->string()->unique()->notNull(),
+            'utm_changed' => $this->smallInteger()->notNull()->defaultValue(0),
             'active' => $this->smallInteger()->notNull()->defaultValue(0),
             'type' => $this->smallInteger()->notNull(),
             'created_at' => $this->integer()->notNull(),

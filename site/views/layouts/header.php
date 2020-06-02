@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 <header class="main-header">
 
-    <?= Html::a('<span class="logo-mini">APP</span><span class="logo-lg">' . Yii::$app->name . '</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
+    <?= Html::a('<span class="logo-mini"> </span><span class="logo-lg">Партнеры</span>', Yii::$app->homeUrl, ['class' => 'logo']) ?>
 
     <nav class="navbar navbar-static-top" role="navigation">
 
@@ -15,6 +15,7 @@ use yii\helpers\Html;
             <span class="sr-only">Toggle navigation</span>
         </a>
 
+        <?php if (false): ?>
         <div class="navbar-custom-menu">
 
             <ul class="nav navbar-nav">
@@ -277,5 +278,6 @@ use yii\helpers\Html;
                 </li>
             </ul>
         </div>
+        <?php endif ?>
     </nav>
 </header>

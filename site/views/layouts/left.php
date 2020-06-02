@@ -2,6 +2,7 @@
 
     <section class="sidebar">
 
+        <?php if (false): ?>
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
@@ -25,16 +26,41 @@
             </div>
         </form>
         <!-- /.search form -->
+        <?php endif ?>
 
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
-                    ['label' => 'Menu Yii2', 'options' => ['class' => 'header']],
-                    ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
-                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
-                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+                    ['label' => 'Меню', 'options' => ['class' => 'header']],
                     [
+                        'label' => 'Профиль',
+                        'icon' => 'user',
+                        'url' => ['/'],
+                        'active' => $this->context->route === 'site/index'
+                    ],
+                    [
+                        'label' => 'Отчет по регистрациям',
+                        'icon' => 'list',
+                        'url' => ['/site/report1'],
+                        'active' => $this->context->route === 'site/report1'
+                    ],
+                    [
+                        'label' => 'Отчет по покупкам',
+                        'icon' => 'list',
+                        'url' => ['/site/report2'],
+                        'active' => $this->context->route === 'site/report2'
+                    ],
+                    [
+                        'label' => 'Партнеры',
+                        'icon' => 'users',
+                        'url' => ['/site/partners'],
+                        'active' => $this->context->route === 'site/partners'
+                    ],
+                    false && ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
+                    false && ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
+                    false && ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
+                    false && [
                         'label' => 'Some tools',
                         'icon' => 'share',
                         'url' => '#',
@@ -61,6 +87,7 @@
                         ],
                     ],
                 ],
+                'activeCssClass'=>'active',
             ]
         ) ?>
 

@@ -2,9 +2,14 @@
 
 namespace app\controllers;
 
+use app\models\forms\PurchaseReport;
+use app\models\forms\RegistrationReport;
 use app\models\forms\UTM;
 use app\models\Partner;
 use app\models\User;
+use app\rbac\Roles;
+use app\services\PurchaseCountService;
+use app\services\RegistrationCountService;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -63,19 +68,63 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionReport1()
+    public function actionRegistrationReport()
     {
-        return $this->render('report1');
+        $form = new RegistrationReport([
+            'from' => '01-01-2000',
+            'to' => date('d-m-Y'),
+            'utm' => Partner::getCurrentUTM()
+        ]);
+
+        $service = new RegistrationCountService();
+
+        $utm = [];
+        if (Roles::isAdmin()) {
+            $utm = $service->getAllUTM();
+        }
+
+        $form->load(Yii::$app->request->post()) && $form->validate();
+        if (Roles::isAdmin() && !$form->utm) {
+            $form->utm = array_keys($utm)[0];
+        }
+
+        $count = $service->getCount($form);
+
+        return $this->render('registration-report', [
+            'form' => $form,
+            'count' => $count,
+            'utm' => $utm
+        ]);
     }
 
-    public function actionReport2()
+    public function actionPurchaseReport()
     {
-        return $this->render('report2');
-    }
+        $form = new PurchaseReport([
+            'from' => '01-01-2000',
+            'to' => date('d-m-Y'),
+            'utm' => Partner::getCurrentUTM()
+        ]);
 
-    public function actionPartners()
-    {
-        return $this->render('partners');
+        $registrationService = new RegistrationCountService();
+        $purchaseService = new PurchaseCountService();
+
+        $utm = [];
+        if (Roles::isAdmin()) {
+            $utm = $registrationService->getAllUTM();
+        }
+
+        $form->load(Yii::$app->request->post()) && $form->validate();
+        if (Roles::isAdmin() && !$form->utm) {
+            $form->utm = array_keys($utm)[0];
+        }
+
+        $purchase = $purchaseService->getPurchase($form);
+
+        return $this->render('purchase-report', [
+            'form' => $form,
+            'purchase' => $purchase,
+            'utm' => $utm
+        ]);
     }
 
     public function actionLogin()

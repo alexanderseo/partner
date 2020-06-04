@@ -3,6 +3,10 @@
 namespace app\commands;
 
 use app\rbac\Roles;
+use app\rbac\rules\ChangeUTM;
+use app\rbac\rules\PurchaseReport;
+use app\rbac\rules\RegistrationReport;
+use app\rbac\rules\UserRole;
 use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
@@ -14,17 +18,25 @@ class RoleController extends Controller
         $auth = Yii::$app->getAuthManager();
         $auth->removeAll();
 
-        $userRole = new \app\rbac\rules\UserRole();
+        $userRole = new UserRole();
         $auth->add($userRole);
 
-        $changeUTM = new \app\rbac\rules\ChangeUTM();
+        $changeUTM = new ChangeUTM();
         $auth->add($changeUTM);
 
-        $registrationReport = $auth->createPermission('registrationReport');
+        $registrationReport = new RegistrationReport();
         $auth->add($registrationReport);
 
-        $purchaseReport = $auth->createPermission('purchaseReport');
+        $registrationReportPermission = $auth->createPermission(Roles::PERMISSION_REGISTRATION_REPORT);
+        $registrationReportPermission->ruleName = $registrationReport->name;
+        $auth->add($registrationReportPermission);
+
+        $purchaseReport = new PurchaseReport();
         $auth->add($purchaseReport);
+
+        $purchaseReportPermission = $auth->createPermission(Roles::PERMISSION_PURCHASE_REPORT);
+        $purchaseReportPermission->ruleName = $purchaseReport->name;
+        $auth->add($purchaseReportPermission);
 
         $changeUTMpermission = $auth->createPermission(Roles::PERMISSION_CHANGE_UTM);
         $changeUTMpermission->ruleName = $changeUTM->name;
@@ -38,9 +50,12 @@ class RoleController extends Controller
         $partner->ruleName = $userRole->name;
         $auth->add($partner);
 
-        //$auth->addChild($admin, $partner);
-        $auth->addChild($partner, $purchaseReport);
-        $auth->addChild($partner, $registrationReport);
+        $auth->addChild($partner, $registrationReportPermission);
+        $auth->addChild($admin, $registrationReportPermission);
+
+        $auth->addChild($partner, $purchaseReportPermission);
+        $auth->addChild($admin, $purchaseReportPermission);
+
         $auth->addChild($partner, $changeUTMpermission);
 
         $this->stdout('Done!' . PHP_EOL);

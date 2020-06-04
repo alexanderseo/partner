@@ -1,5 +1,6 @@
 <?php
 
+use app\rbac\Roles;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -38,7 +39,7 @@ $this->title = 'Профиль';
     </div>
 </div>
 
-<?php if (Yii::$app->user->can(\app\rbac\Roles::PERMISSION_CHANGE_UTM)): ?>
+<?php if (Roles::can(Roles::PERMISSION_CHANGE_UTM)): ?>
 
     <?php $activeForm = ActiveForm::begin() ?>
 

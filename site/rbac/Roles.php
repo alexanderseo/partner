@@ -10,6 +10,8 @@ class Roles
     const ROLE_PARTNER = 'partner';
 
     const PERMISSION_CHANGE_UTM = 'changeUTM';
+    const PERMISSION_REGISTRATION_REPORT = 'registrationReport';
+    const PERMISSION_PURCHASE_REPORT = 'purchaseReport';
 
     public static function getAllRoles()
     {
@@ -17,6 +19,11 @@ class Roles
             self::ROLE_ADMIN => self::ROLE_ADMIN,
             self::ROLE_PARTNER => self::ROLE_PARTNER
         ];
+    }
+
+    public static function can($permission)
+    {
+        return Yii::$app->user->can($permission);
     }
 
     public static function isAdmin()

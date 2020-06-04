@@ -45,18 +45,18 @@ use app\rbac\Roles;
                         'url' => ['/'],
                         'active' => $this->context->route === 'site/index'
                     ],
-                    [
+                    Roles::can(Roles::PERMISSION_REGISTRATION_REPORT) ? [
                         'label' => 'Отчет по регистрациям',
                         'icon' => 'list',
-                        'url' => ['/site/report1'],
-                        'active' => $this->context->route === 'site/report1'
-                    ],
-                    [
+                        'url' => ['/site/registration-report'],
+                        'active' => $this->context->route === '/site/registration-report'
+                    ] : null,
+                    Roles::can(Roles::PERMISSION_PURCHASE_REPORT) ? [
                         'label' => 'Отчет по покупкам',
                         'icon' => 'list',
-                        'url' => ['/site/report2'],
-                        'active' => $this->context->route === 'site/report2'
-                    ],
+                        'url' => ['/site/purchase-report'],
+                        'active' => $this->context->route === '/site/purchase-report'
+                    ] : null,
                     Roles::isAdmin() ? [
                         'label' => 'Партнеры',
                         'icon' => 'users',

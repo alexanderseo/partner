@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\forms\UTM;
+use app\models\Partner;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
@@ -45,35 +47,20 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        if (Yii::$app->user->isGuest) {
-            $this->layout = 'main-login';
+        $form = new UTM();
 
-            $model = new Login();
-
-            if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-                $user = User::getAuthUser($model->mail, $model->password);
-
-                if (!$user) {
-                    return $this->render('login', [
-                        'model' => $model,
-                        'wrong' => true,
-                    ]);
-                }
-
-                Yii::$app->user->login($user, $model->rememberMe ? 3600 * 24 * 30 : 0);
-                return $this->goBack();
-            }
-
-            return $this->render('login', [
-                'model' => $model,
-                'wrong' => false
-            ]);
-        } else {
-            return $this->render('profile', [
-                'user' => Yii::$app->user->identity,
-            ]);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            /** @var Partner $partner */
+            $partner = Yii::$app->user->identity->partner;
+            $partner->changeUTM($form->utm);
+            $partner->save();
+            return $this->refresh();
         }
 
+        return $this->render('profile', [
+            'user' => Yii::$app->user->identity,
+            'form' => $form,
+        ]);
     }
 
     public function actionReport1()
@@ -89,6 +76,32 @@ class SiteController extends Controller
     public function actionPartners()
     {
         return $this->render('partners');
+    }
+
+    public function actionLogin()
+    {
+        $this->layout = 'main-login';
+
+        $model = new Login();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $user = User::getAuthUser($model->mail, $model->password);
+
+            if (!$user) {
+                return $this->render('login', [
+                    'model' => $model,
+                    'wrong' => true,
+                ]);
+            }
+
+            Yii::$app->user->login($user, $model->rememberMe ? 3600 * 24 * 30 : 0);
+            return $this->goBack();
+        }
+
+        return $this->render('login', [
+            'model' => $model,
+            'wrong' => false
+        ]);
     }
 
     public function actionLogout()

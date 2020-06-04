@@ -24,6 +24,7 @@ class m200602_004440_create_users_table extends Migration
             'auth_key' => $this->string()->notNull(),
             'mail' => $this->string()->notNull()->unique(),
             'role' => $this->string()->notNull(),
+            'active' => $this->smallInteger()->notNull()->defaultValue(0),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ], $tableOptions);

@@ -14,8 +14,11 @@ class RoleController extends Controller
         $auth = Yii::$app->getAuthManager();
         $auth->removeAll();
 
-        $rule = new \app\rbac\rules\UserRole();
-        $auth->add($rule);
+        $userRole = new \app\rbac\rules\UserRole();
+        $auth->add($userRole);
+
+        $changeUTM = new \app\rbac\rules\ChangeUTM();
+        $auth->add($changeUTM);
 
         $registrationReport = $auth->createPermission('registrationReport');
         $auth->add($registrationReport);
@@ -23,16 +26,22 @@ class RoleController extends Controller
         $purchaseReport = $auth->createPermission('purchaseReport');
         $auth->add($purchaseReport);
 
+        $changeUTMpermission = $auth->createPermission(Roles::PERMISSION_CHANGE_UTM);
+        $changeUTMpermission->ruleName = $changeUTM->name;
+        $auth->add($changeUTMpermission);
+
         $admin = $auth->createRole(Roles::ROLE_ADMIN);
-        $admin->ruleName = $rule->name;
+        $admin->ruleName = $userRole->name;
         $auth->add($admin);
 
         $partner = $auth->createRole(Roles::ROLE_PARTNER);
-        $partner->ruleName = $rule->name;
+        $partner->ruleName = $userRole->name;
         $auth->add($partner);
 
         //$auth->addChild($admin, $partner);
         $auth->addChild($partner, $purchaseReport);
+        $auth->addChild($partner, $registrationReport);
+        $auth->addChild($partner, $changeUTMpermission);
 
         $this->stdout('Done!' . PHP_EOL);
 

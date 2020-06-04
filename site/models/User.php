@@ -18,6 +18,8 @@ use yii\web\IdentityInterface;
  * @property string $auth_key
  * @property string $mail
  * @property string $role
+ * @property int $active
+ * @property Partner $partner
  * @property int $created_at
  * @property int $updated_at
  */
@@ -33,6 +35,7 @@ class User extends ActiveRecord implements IdentityInterface
         $user->auth_key = Yii::$app->security->generateRandomString();
         $user->mail = $mail;
         $user->role = $role;
+        $user->active = 1;
 
         return $user;
     }
@@ -47,6 +50,12 @@ class User extends ActiveRecord implements IdentityInterface
         return $user;
     }
 
+    public function getPartner()
+    {
+        return $this->hasOne(Partner::class, ['user_id' => 'id'])->inverseOf('user');
+    }
+
+    // bootstrap
     public static function tableName()
     {
         return '{{%users}}';

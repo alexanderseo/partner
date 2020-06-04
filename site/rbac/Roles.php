@@ -9,6 +9,8 @@ class Roles
     const ROLE_ADMIN = 'admin';
     const ROLE_PARTNER = 'partner';
 
+    const PERMISSION_CHANGE_UTM = 'changeUTM';
+
     public static function getAllRoles()
     {
         return [

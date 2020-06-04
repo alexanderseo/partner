@@ -16,7 +16,6 @@ use yii\db\ActiveRecord;
  * @property string $site
  * @property string $utm
  * @property int $utm_changed
- * @property int $active
  * @property int $type
  * @property int $created_at
  * @property int $updated_at
@@ -24,7 +23,16 @@ use yii\db\ActiveRecord;
 
 class Partner extends ActiveRecord
 {
+    public function changeUTM($utm)
+    {
+        $this->utm = $utm;
+        $this->utm_changed++;
+    }
 
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
 
     public static function tableName()
     {

@@ -39,7 +39,7 @@ class Partner extends ActiveRecord
         return $partner->utm;
     }
 
-    public static function create(\app\models\forms\Partner $form)
+    public static function create(\app\models\forms\PartnerCreate $form)
     {
         $user = User::create($form->name, $form->password, $form->mail, Roles::ROLE_PARTNER);
         $user->save();
@@ -54,7 +54,7 @@ class Partner extends ActiveRecord
         return $partner->id;
     }
 
-    public function updatePartner(\app\models\forms\Partner $form)
+    public function updatePartner(\app\models\forms\PartnerUpdate $form)
     {
         $this->site = $form->site;
         $this->utm = $form->utm;
@@ -62,8 +62,10 @@ class Partner extends ActiveRecord
         $this->save();
 
         $this->user->name = $form->name;
-        $this->user->password_hash = Yii::$app->security->generatePasswordHash($form->password);
-        $this->user->auth_key = Yii::$app->security->generateRandomString();
+        if ($form->password) {
+            $this->user->password_hash = Yii::$app->security->generatePasswordHash($form->password);
+            $this->user->auth_key = Yii::$app->security->generateRandomString();
+        }
         $this->user->mail = $form->mail;
         $this->user->save();
     }

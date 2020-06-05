@@ -55,7 +55,7 @@ class PartnersController extends Controller
 
     public function actionCreate()
     {
-        $form = new \app\models\forms\Partner();
+        $form = new \app\models\forms\PartnerCreate();
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
             $id = Partner::create($form);
@@ -70,7 +70,8 @@ class PartnersController extends Controller
     public function actionUpdate($id)
     {
         $partner = $this->findModel($id);
-        $form = new \app\models\forms\Partner([
+        $form = new \app\models\forms\PartnerUpdate([
+            'id' => $partner->id,
             'name' => $partner->user->name,
             'mail' => $partner->user->mail,
             'site' => $partner->site,
@@ -79,12 +80,13 @@ class PartnersController extends Controller
         ]);
 
         if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $id = $partner->updatePartner($form);
+            $partner->updatePartner($form);
             return $this->redirect(['view', 'id' => $id]);
         }
 
         return $this->render('update', [
             'form' => $form,
+            'partner' => $partner,
         ]);
     }
 

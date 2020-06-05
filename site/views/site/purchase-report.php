@@ -24,7 +24,7 @@ $this->title = 'Отчет по покупкам';
         <div class="box-body">
             <?php $activeForm = ActiveForm::begin() ?>
             <?php if (\app\rbac\Roles::isAdmin()): ?>
-                <?= $activeForm->field($form, 'utm')->dropDownList($utm) ?>
+                <?= $activeForm->field($form, 'utm')->dropDownList($utm)->label('Сайт') ?>
             <?php endif ?>
 
             <div class="row margin-bottom-md">

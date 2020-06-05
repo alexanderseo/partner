@@ -4,7 +4,7 @@ namespace app\models\forms;
 
 use yii\base\Model;
 
-class Partner extends Model
+class PartnerCreate extends Model
 {
     public $name;
     public $mail;

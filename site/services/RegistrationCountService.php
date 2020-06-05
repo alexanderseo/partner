@@ -35,6 +35,6 @@ class RegistrationCountService
 
     public function getAllUTM()
     {
-        return WebUserSourceTraking::find()->select('utm_source')->distinct()->indexBy('utm_source')->column();
+        return Partner::find()->select('site')->distinct()->indexBy('utm')->column();
     }
 }

@@ -37,4 +37,24 @@ class RegistrationCountService
     {
         return Partner::find()->select('site')->distinct()->indexBy('utm')->column();
     }
+
+    public function getTotal(RegistrationReport $form)
+    {
+        $from = \DateTime::createFromFormat('d-m-Y', $form->from);
+        $from = $from->format('Y-m-d');
+        $from = $from . ' 00:00:00';
+
+        $to = \DateTime::createFromFormat('d-m-Y', $form->to);
+        $to = $to->format('Y-m-d');
+        $to = $to . ' 23:59:59';
+
+        $result = WebUserSourceTraking::find()
+            ->filterWhere(['between', 'transition_ts', $from, $to])
+            ->select(['utm_source as utm', 'count(*) as total'])
+            ->groupBy('utm_source')
+            ->orderBy('utm')
+            ->createCommand()->queryAll();
+
+        return $result;
+    }
 }

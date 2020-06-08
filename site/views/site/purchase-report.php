@@ -4,7 +4,9 @@
 /** @var \app\models\forms\PurchaseReport $form */
 /** @var array $purchase */
 /** @var array $utm */
+/** @var array $total */
 
+use app\rbac\Roles;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -23,7 +25,7 @@ $this->title = 'Отчет по покупкам';
         </div>
         <div class="box-body">
             <?php $activeForm = ActiveForm::begin() ?>
-            <?php if (\app\rbac\Roles::isAdmin()): ?>
+            <?php if (Roles::isAdmin()): ?>
                 <?= $activeForm->field($form, 'utm')->dropDownList($utm)->label('Сайт') ?>
             <?php endif ?>
 
@@ -70,6 +72,39 @@ $this->title = 'Отчет по покупкам';
             <?php if (!count($purchase)): ?>
                 <p>Покупки отсутствуют</p>
             <?php endif ?>
+        </div>
+    </div>
+<?php endif ?>
+
+<?php if (Roles::isAdmin() && $total): ?>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Итого с <?= $form->from ?> по <?= $form->to ?></h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-striped">
+                <tr>
+                    <th>Метка</th>
+                    <th>Валюта</th>
+                    <th>Покупок</th>
+                    <th>Сумма</th>
+                </tr>
+                <?php foreach ($total as $utm => $item): ?>
+                    <?php foreach ($item as $currency => $values): ?>
+                        <tr>
+                            <td><?= $utm ?></td>
+                            <td><?= $currency ?></td>
+                            <td><?= $values['total'] ?></td>
+                            <td><?= $values['count'] ?></td>
+                        </tr>
+                    <?php endforeach ?>
+                <?php endforeach ?>
+            </table>
         </div>
     </div>
 <?php endif ?>

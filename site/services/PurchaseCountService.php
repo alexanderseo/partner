@@ -51,4 +51,46 @@ class PurchaseCountService
 
         return $result;
     }
+
+    public function getTotal(PurchaseReport $form)
+    {
+        $from = \DateTime::createFromFormat('d-m-Y H:i:s', $form->from . ' 00:00:00');
+        $from = $from->getTimestamp();
+
+        $to = \DateTime::createFromFormat('d-m-Y H:i:s', $form->to . ' 23:59:59');
+        $to = $to->getTimestamp();
+
+        $partnerUtms = Partner::find()->select('utm')->distinct()->column();
+
+        $result = [];
+        foreach ($partnerUtms as $utm) {
+            $webUsers = WebUserSourceTraking::find()
+                ->where(['utm_source' => $utm])
+                ->select('web_user_id')->column();
+
+            $purchase = WebUserPurchases::find()
+                ->where(['web_user_id' => $webUsers])
+                ->andWhere(['state' => 1])
+                ->andWhere(['>=', 'created', $from])
+                ->andWhere(['<=', 'created', $to])
+                ->select(['currency_id', 'payment_amount'])
+                ->asArray()->all();
+
+            $row = [];
+            foreach ($purchase as $item) {
+                $currency = Partner::getCurrencyName($item['currency_id']);
+                $amount = $item['payment_amount'];
+                if (empty($row[$currency])) $row[$currency] = [
+                    'total' => 0,
+                    'count' => 0,
+                ];
+                $row[$currency]['total'] += $amount;
+                $row[$currency]['count'] ++;
+            }
+
+            $result[$utm] = $row;
+        }
+
+        return $result;
+    }
 }

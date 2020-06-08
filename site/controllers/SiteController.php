@@ -89,11 +89,13 @@ class SiteController extends Controller
         }
 
         $count = $service->getCount($form);
+        $total = $service->getTotal($form);
 
         return $this->render('registration-report', [
             'form' => $form,
             'count' => $count,
-            'utm' => $utm
+            'utm' => $utm,
+            'total' => $total,
         ]);
     }
 
@@ -119,11 +121,13 @@ class SiteController extends Controller
         }
 
         $purchase = $purchaseService->getPurchase($form);
+        $total = $purchaseService->getTotal($form);
 
         return $this->render('purchase-report', [
             'form' => $form,
             'purchase' => $purchase,
-            'utm' => $utm
+            'utm' => $utm,
+            'total' => $total,
         ]);
     }
 
